@@ -22,7 +22,7 @@
 using namespace std;
 using namespace cv;
 
-
+//处理文件
 vector<string> getAllFiles(string cate_dir)
 {
     vector<string> files;//存放文件名

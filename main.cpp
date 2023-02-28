@@ -25,7 +25,7 @@ using namespace cv;
 
 #define TRAIN false     //是否进行训练,true表示重新训练，false表示读取xml文件中的SVM模型
 #define CENTRAL_CROP true   //true:训练时，对96*160的INRIA正样本图片剪裁出中间的64*128大小人体
-
+//是否需要裁剪
 //需要处理的目标文件
 #define TARGET "target.jpg"
 #define TARGET_PATH string("./targets/")
@@ -65,7 +65,7 @@ int main()
     
     MySVM svm;
     //训练分类器
-    if(TRAIN)
+    if(TRAIN)//训练模式
     {
         train(svm,TRAIN_POS_PATH,TRAIN_NEG_PATH,SVM_PATH+"svm.xml");
         
@@ -82,7 +82,7 @@ int main()
     
     
 
-    
+    //预处理图片
     //处理目标文件
     vector<string> targets = getAllFiles(TARGET_PATH);
     for (int i=0; i<targets.size(); i++) {
@@ -101,7 +101,7 @@ int main()
         
         
         
-        if(mode==1)
+        if(mode==1)//清晰图片
         {
             //腐蚀、膨胀
             int erosion_size = 3;
@@ -112,7 +112,7 @@ int main()
             erode( origin, origin, element );
             dilate(origin, origin, element);
         }
-        else if(mode == 2)
+        else if(mode == 2)//模糊图片
         {
             //创建并初始化滤波模板
             cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));

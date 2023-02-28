@@ -18,7 +18,7 @@
 
 using namespace cv;
 
-HOGDescriptor* detect(MySVM &svm)
+HOGDescriptor* detect(MySVM &svm)//测试
 {
     HOGDescriptor hog(WIN_SIZE,BLOCK_SIZE,BLOCK_STRIDE,CELL_SIZE,BIN);  //HOG检测器，用来计算HOG描述子的
     int DescriptorDim;//HOG描述子的维数
@@ -70,7 +70,7 @@ HOGDescriptor* detect(MySVM &svm)
 }
 
 
-void train(MySVM &svm,string posPath,string negPath,string savePath="")
+void train(MySVM &svm,string posPath,string negPath,string savePath="")//训练
 {
     HOGDescriptor hog(WIN_SIZE,BLOCK_SIZE,BLOCK_STRIDE,CELL_SIZE,BIN);//HOG检测器，用来计算HOG描述子的
     unsigned int DescriptorDim = 0;//HOG描述子的维数，由图片大小、检测窗口大小、块大小、细胞单元中直方图bin个数决定
