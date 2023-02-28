@@ -24,7 +24,7 @@ using namespace cv;
 
 
 /**
- * 颜色过滤，去除非蓝红以外的颜色
+ * 颜色过滤，去除非蓝红以外的颜色，由于标尺上的颜色固定，故可以丢弃与之无关的颜色区域
  *
  */
 Mat filterColor(const Mat &inputImage)
@@ -79,7 +79,7 @@ vector<Rect> filterRect(vector<Rect> R)
     for (int i=0; i<R.size(); i++)
     {
         
-        if(R[i].width<=RECT_WIDTH_LIMIT)
+        if(R[i].width<=RECT_WIDTH_LIMIT)//宽度小的保留
             result.push_back(R[i]);
     }
     return result;
@@ -94,7 +94,7 @@ vector<Rect> filterRect(const Mat inputImage,vector<Rect>found)
     vector<Rect> result;
     for (size_t i = 0; i < found.size(); i++)
     {
-        if(found[i].width > RECT_WIDTH_LIMIT)
+        if(found[i].width > RECT_WIDTH_LIMIT)//宽度大的舍弃
         {
             continue;
         }
@@ -141,7 +141,8 @@ void overSpread(Mat &mask,int width,int height,int threshold)
 
 
 /**
- * 单峰过滤
+ * 单峰过滤，将除最高峰以外的矩形丢弃
+ 因为一张图中仅有一个标尺，所以通过前面的过滤后，矩形在图片上的分布应该在一段特定的x距离比较高
  *
  */
 vector<Rect> filterSinglePeak(vector<Rect> R)
@@ -257,6 +258,7 @@ Mat mergeMasks(vector<Mat> Vmat){
 
 /**
  * 基于Canny边缘检测的过滤
+ * Canny算子多用于检测物体的边缘，我们通过保留边缘区域后，并将边缘铺展开来，以得到保留区域
  *
  */
 Mat filterCanny(const Mat inputImage)

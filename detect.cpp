@@ -74,15 +74,15 @@ void train(MySVM &svm,string posPath,string negPath,string savePath="")//训练
 {
     HOGDescriptor hog(WIN_SIZE,BLOCK_SIZE,BLOCK_STRIDE,CELL_SIZE,BIN);//HOG检测器，用来计算HOG描述子的
     unsigned int DescriptorDim = 0;//HOG描述子的维数，由图片大小、检测窗口大小、块大小、细胞单元中直方图bin个数决定
-    vector<string> posImg = getAllFiles(posPath);
-    vector<string> negImg = getAllFiles(negPath);
+    vector<string> posImg = getAllFiles(posPath);//正样本
+    vector<string> negImg = getAllFiles(negPath);//负样本
     unsigned long posNum = posImg.size();
     unsigned long negNum = negImg.size()*2;
     string ImgName;//图片名(绝对路径)
     
     
     Mat sampleFeatureMat;//所有训练样本的特征向量组成的矩阵，行数等于所有样本的个数，列数等于HOG描述子维数
-    Mat sampleLabelMat;//训练样本的类别向量，行数等于所有样本的个数，列数等于1；1表示有人，-1表示无人
+    Mat sampleLabelMat;//训练样本的类别向量，行数等于所有样本的个数，列数等于1；1表示有尺子，-1表示无尺子
     
     for (int num=0; num<posImg.size(); num++)
     {
