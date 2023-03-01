@@ -115,7 +115,7 @@ int main()
         else if(mode == 2)//模糊图片，对于模糊的图片数据，先进行滤波，再提高对比度
         {
             //创建并初始化滤波模板
-            cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));
+            cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));//
             kernel.at<float>(1,1) = 5.0;
             kernel.at<float>(0,1) = -1.0;
             kernel.at<float>(1,0) = -1.0;
@@ -141,7 +141,7 @@ int main()
         
         
         Mat src = origin;//处理后的图片
-        cvtColor(src, src, CV_RGB2GRAY);//灰度化
+        cvtColor(src, src, CV_RGB2GRAY);//灰度化，加快检测速度
         equalizeHist( src, src );//直方图均衡化
         // 图像的直方图是对图像对比度效果上的一种处理，旨在使得图像整体效果均匀，黑与白之间的各个像素级之间的点更均匀一点。
         vector<Rect> found, found_filtered;//矩形框数组
@@ -186,7 +186,7 @@ int main()
         
  
         
-        for (size_t i = 0; i < found.size(); i++)
+        for (size_t i = 0; i < found.size(); i++)//opencv的数据类型size_t
         {
             cv::rectangle(origin, found[i], cv::Scalar(0, 255, 0),2);
         }
