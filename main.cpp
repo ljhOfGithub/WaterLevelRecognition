@@ -101,18 +101,18 @@ int main()
         
         
         
-        if(mode==1)//清晰图片
+        if(mode==1)//清晰图片，对于清晰的图片，进行适度腐蚀膨胀操作，以进一步提高图片中标尺的对比度。
         {
             //腐蚀、膨胀
             int erosion_size = 3;
             Mat element = getStructuringElement( MORPH_RECT,
                                                 Size( 2*erosion_size + 1, 2*erosion_size+1 ),
-                                                Point( erosion_size, erosion_size ) );
+                                                Point( erosion_size, erosion_size ) );//腐蚀矩阵
             /// 腐蚀操作
             erode( origin, origin, element );//将origin处理后放回origin，使用element操作图片
-            dilate(origin, origin, element);
+            dilate(origin, origin, element);//膨胀
         }
-        else if(mode == 2)//模糊图片
+        else if(mode == 2)//模糊图片，对于模糊的图片数据，先进行滤波，再提高对比度
         {
             //创建并初始化滤波模板
             cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));
@@ -123,7 +123,7 @@ int main()
             kernel.at<float>(2,1) = -1.0;
             cv::filter2D(origin,origin,origin.depth(),kernel);
             
-            int alpha = 1.5;
+            int alpha = 1.5;//提高对比度
             int beta = 50;
             for( int y = 0; y < origin.rows; y++ )
             {
@@ -141,14 +141,12 @@ int main()
         
         
         Mat src = origin;//处理后的图片
-        
         cvtColor(src, src, CV_RGB2GRAY);//灰度化
-        
-        equalizeHist( src, src );
-        
+        equalizeHist( src, src );//直方图均衡化
+        // 图像的直方图是对图像对比度效果上的一种处理，旨在使得图像整体效果均匀，黑与白之间的各个像素级之间的点更均匀一点。
         vector<Rect> found, found_filtered;//矩形框数组
-        
-        //设置svm用于检测的参数
+        //可能是如果min_neighbors，minSize，maxSize和两个scale参数
+        //设置svm用于检测的参数，此方法的任务是检测不同大小的对象，并返回矩形的列表。
         myHOG->detectMultiScale(src, found, 0, Size(8,8), Size(16,16), 1.05, 2);//found存取检测到的目标位置
         // 3.hitThreshold (可选)
         // opencv documents的解释是特征到SVM超平面的距离的阈值(Threshold for the distance between features and SVM classifying plane)
@@ -165,6 +163,18 @@ int main()
         // 通常scale在1.01-1.5这个区间
         // 7.finalThreshold（可选）
         // 这个参数不太清楚，有人说是为了优化最后的bounding box
+
+        //  参数1：image–待检测图片，一般为灰度图像加快检测速度；
+        // 参数2：objects–被检测物体的矩形框向量组；
+        // 参数3：scaleFactor–表示在前后两次相继的扫描中，搜索窗口的比例系数。默认为1.1即每次搜索窗口依次扩大10%;
+        // **参数4：**minNeighbors–表示构成检测目标的相邻矩形的最小个数(默认为3个)。
+        // 如果组成检测目标的小矩形的个数和小于 min_neighbors - 1 都会被排除。
+        // 如果min_neighbors 为 0, 则函数不做任何操作就返回所有的被检候选矩形框，
+        // 这种设定值一般用在用户自定义对检测结果的组合程序上
+        // 参数5：flags–要么使用默认值，要么使用CV_HAAR_DO_CANNY_PRUNING，如果设置为
+        // CV_HAAR_DO_CANNY_PRUNING，那么函数将会使用Canny边缘检测来排除边缘过多或过少的区域，
+        // 因此这些区域通常不会是人脸所在区域；
+        // 参数6、7：minSize和maxSize用来限制得到的目标区域的范围。
 
         found = filterRect(mask, found);//使用处理后的图片，过滤异常大小的识别矩形后放入图片
         found = filterSinglePeak(found);//使用单峰过滤矩形
