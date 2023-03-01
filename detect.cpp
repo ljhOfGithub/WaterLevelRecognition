@@ -5,7 +5,7 @@
 //  Created by william wei on 17/2/22.
 //  Copyright © 2017年 simon. All rights reserved.
 //
-
+//svm训练，结合训练后的svm使用hog描述子识别结果
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
