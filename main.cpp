@@ -67,7 +67,7 @@ int main()
     //训练分类器
     if(TRAIN)//训练模式
     {
-        train(svm,TRAIN_POS_PATH,TRAIN_NEG_PATH,SVM_PATH+"svm.xml");
+        train(svm,TRAIN_POS_PATH,TRAIN_NEG_PATH,SVM_PATH+"svm.xml");//正负样本的路径，svm保存路径
         
     }
     else
