@@ -18,12 +18,12 @@
 
 using namespace cv;
 
-HOGDescriptor* detect(MySVM &svm)//测试
+HOGDescriptor* detect(MySVM &svm)//测试，传入已经训练好的svm模型
 {
     HOGDescriptor hog(WIN_SIZE,BLOCK_SIZE,BLOCK_STRIDE,CELL_SIZE,BIN);  //HOG检测器，用来计算HOG描述子的
     int DescriptorDim;//HOG描述子的维数
 
-    
+    //特征向量的维数不是用户指定，用户只指定步长，窗口等
     DescriptorDim = svm.get_var_count();//特征向量的维数，即HOG描述子的维数，通过特征向量的维数获得描述子的维数
     int supportVectorNum = svm.get_support_vector_count();//支持向量的个数
 
@@ -31,14 +31,14 @@ HOGDescriptor* detect(MySVM &svm)//测试
     Mat alphaMat = Mat::zeros(1, supportVectorNum, CV_32FC1);//alpha向量，长度等于支持向量个数
     Mat supportVectorMat = Mat::zeros(supportVectorNum, DescriptorDim, CV_32FC1);//支持向量矩阵
     Mat resultMat = Mat::zeros(1, DescriptorDim, CV_32FC1);//alpha向量乘以支持向量矩阵的结果矩阵，矩阵相乘
-    
-    //将支持向量的数据复制到supportVectorMat矩阵中
+    //resultMat是1*DescriptorDim的矩阵
+    //将支持向量的数据复制到supportVectorMat矩阵中，逐个复制
     for(int i=0; i<supportVectorNum; i++)
     {
-        const float * pSVData = svm.get_support_vector(i);
+        const float * pSVData = svm.get_support_vector(i);//获得支持向量数组
         for(int j=0; j<DescriptorDim; j++)
         {
-            supportVectorMat.at<float>(i,j) = pSVData[j];
+            supportVectorMat.at<float>(i,j) = pSVData[j];//逐个复制支持向量数组
         }
     }
     
@@ -50,18 +50,19 @@ HOGDescriptor* detect(MySVM &svm)//测试
         alphaMat.at<float>(0,i) = pAlphaData[i];
     }
 
-    resultMat = -1 * alphaMat * supportVectorMat;//计算结果矩阵
-    
+    resultMat = -1 * alphaMat * supportVectorMat;//计算结果矩阵，*-1，存放分类结果
+    //注意因为svm.predict使用的是alpha*sv*another-rho，如果为负的话则认为是正样本，在HOG的检测函数中，使用rho+alpha*sv*another(another为-1)
+    //sv是支持向量
 
     vector<float> myDetector;
-    
+    //resultMat是1*DescriptorDim的矩阵
     //将resultMat结果矩阵中的数据复制到数组myDetector中
     for(int i=0; i<DescriptorDim; i++)
     {
-        myDetector.push_back(resultMat.at<float>(0,i));//resultMat第一行的所有列
+        myDetector.push_back(resultMat.at<float>(0,i));//resultMat第一行的所有列，是alpha*sv*another(another为-1)的结果
     }
 
-    myDetector.push_back(svm.get_rho());
+    myDetector.push_back(svm.get_rho());//获得rho
     //设置hog用于提取特征的参数，比如步长
     HOGDescriptor *myHOG = new HOGDescriptor(WIN_SIZE,BLOCK_SIZE,BLOCK_STRIDE,CELL_SIZE,BIN);
 
@@ -142,7 +143,7 @@ void train(MySVM &svm,string posPath,string negPath,string savePath="")//训练,
     CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 1000, FLT_EPSILON);
     //注意必须使用线性SVM进行训练，因为HogDescriptor检测函数只支持线性检测！！！
     CvSVMParams param(CvSVM::C_SVC, CvSVM::LINEAR, 0, 1, 0, 0.01, 0, 0, 0, criteria);//设置svm参数
-        
+
     svm.train(sampleFeatureMat, sampleLabelMat, Mat(), Mat(), param);//训练分类器，使用得到的hog特征和标签，有监督学习
     if(savePath.length()>0)//保存分类器(里面包括了SVM的参数，支持向量,α和rho)
     {
