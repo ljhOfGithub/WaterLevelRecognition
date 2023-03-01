@@ -27,10 +27,10 @@ using namespace cv;
  * 颜色过滤，去除非蓝红以外的颜色，由于标尺上的颜色固定，故可以丢弃与之无关的颜色区域
  *
  */
-Mat filterColor(const Mat &inputImage)
+Mat filterColor(const Mat &inputImage)//自定义颜色过滤器
 {
     Mat hsvImage;
-    cvtColor(inputImage, hsvImage, CV_BGR2HSV);
+    cvtColor(inputImage, hsvImage, CV_BGR2HSV);//设置hsvImage为inputImage格式，然后用于得到resultGray
     Mat resultGray = Mat(hsvImage.rows, hsvImage.cols,CV_8U,cv::Scalar(255));
     //Mat resultColor = Mat(hsvImage.rows, hsvImage.cols,CV_8UC3,cv::Scalar(255, 255, 255));
     double H=0.0,S=0.0,V=0.0;
@@ -64,7 +64,7 @@ Mat filterColor(const Mat &inputImage)
     overSpread(resultGray,20,50);
     
     
-    return resultGray;
+    return resultGray;//返回预处理后的图片
 }
 
 
@@ -92,9 +92,9 @@ vector<Rect> filterRect(const Mat inputImage,vector<Rect>found)
     Mat src = inputImage;
     
     vector<Rect> result;
-    for (size_t i = 0; i < found.size(); i++)
+    for (size_t i = 0; i < found.size(); i++)//遍历找到的矩形，然后在inputImage中加入找到的取舍后的矩形
     {
-        if(found[i].width > RECT_WIDTH_LIMIT)//宽度大的舍弃
+        if(found[i].width > RECT_WIDTH_LIMIT)//找到的矩阵如果宽度大，则舍弃
         {
             continue;
         }
@@ -115,7 +115,7 @@ vector<Rect> filterRect(const Mat inputImage,vector<Rect>found)
                 }
             }
             if (pixel_sum/(width*height*1.0)>AREA_THRESHOLD) {
-                result.push_back(found[i]);
+                result.push_back(found[i]);//返回过滤后的识别结果
             }
         }
     }
@@ -142,7 +142,7 @@ void overSpread(Mat &mask,int width,int height,int threshold)
 
 /**
  * 单峰过滤，将除最高峰以外的矩形丢弃
- 因为一张图中仅有一个标尺，所以通过前面的过滤后，矩形在图片上的分布应该在一段特定的x距离比较高
+ * 因为一张图中仅有一个标尺，所以通过前面的过滤后，矩形在图片上的分布应该在一段特定的x距离比较高
  *
  */
 vector<Rect> filterSinglePeak(vector<Rect> R)
@@ -198,7 +198,7 @@ vector<Rect> filterSinglePeak(vector<Rect> R)
 
 
 /**
- * 将各个mask进行叠加，得到最终的mask
+ * 将各个mask进行叠加，得到最终的mask，即最终的图片
  *
  */
 Mat mergeMasks(vector<Mat> Vmat){

@@ -94,10 +94,10 @@ int main()
         
         Mat mask;
         vector<Mat> masks;
-        masks.push_back(filterColor(origin));//设置mask
+        masks.push_back(filterColor(origin));//设置mask，前后两次过滤，第一次预处理图片，第二次过滤识别结果
         masks.push_back(filterCanny(origin));
         
-        mask = mergeMasks(masks);//复合mask
+        mask = mergeMasks(masks);//复合mask，即得到最终的图片
         
         
         
@@ -166,8 +166,8 @@ int main()
         // 7.finalThreshold（可选）
         // 这个参数不太清楚，有人说是为了优化最后的bounding box
 
-        found = filterRect(mask, found);
-        found = filterSinglePeak(found);
+        found = filterRect(mask, found);//使用处理后的图片，过滤异常大小的识别矩形后放入图片
+        found = filterSinglePeak(found);//使用单峰过滤
         
         
         int finalHeight=0;
