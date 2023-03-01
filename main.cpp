@@ -5,7 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/ml/ml.hpp>
-
+// https://www.jianshu.com/p/077d80422c11
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
