@@ -359,7 +359,7 @@ vector<Rect> adjustTwoRect(vector<Rect>vecrec, int ave, int leftx)
 }
 
 /**
- *  对识别结果进行调整补齐
+ *  对识别结果进行调整补齐，比如数字和E字母
  *
  */
 int adjustRect(vector<Rect> &vecrec)

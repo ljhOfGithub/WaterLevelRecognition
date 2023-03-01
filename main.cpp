@@ -167,12 +167,12 @@ int main()
         // 这个参数不太清楚，有人说是为了优化最后的bounding box
 
         found = filterRect(mask, found);//使用处理后的图片，过滤异常大小的识别矩形后放入图片
-        found = filterSinglePeak(found);//使用单峰过滤
+        found = filterSinglePeak(found);//使用单峰过滤矩形
         
         
         int finalHeight=0;
-        finalHeight = adjustRect(found);
-        finalHeight = fitting(finalHeight);
+        finalHeight = adjustRect(found);//对识别结果进行调整补齐，比如数字和E字母
+        finalHeight = fitting(finalHeight);//线性拟合调整函数
         
  
         
