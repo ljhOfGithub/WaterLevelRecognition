@@ -41,7 +41,7 @@ using namespace cv;
 #define DEVELOPMENT 0
 #define env PRODUCTION
 
-
+//整个过程大致分为四个阶段：图像预处理（第一次过滤）、识别、过滤（第二次）、数据处理（舍弃）
 int main()
 {
     
@@ -94,7 +94,7 @@ int main()
         masks.push_back(filterColor(origin));//设置mask，前后两次过滤，第一次预处理图片，第二次过滤识别结果
         masks.push_back(filterCanny(origin));
         
-        mask = mergeMasks(masks);//复合mask，即得到最终的图片
+        mask = mergeMasks(masks);//复合mask，即得到最终的图片，
         
         if(mode==1)//清晰图片，对于清晰的图片，进行适度腐蚀膨胀操作，以进一步提高图片中标尺的对比度。
         {
