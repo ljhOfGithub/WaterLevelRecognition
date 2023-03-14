@@ -5,7 +5,8 @@
 //  Created by william wei on 17/1/7.
 //  Copyright © 2017年 simon. All rights reserved.
 //
-//图片预处理，识别结果完善
+//回归问题，识别图像
+//图片预处理，识别结果的完善
 #include "process.hpp"
 
 #include <unistd.h>
